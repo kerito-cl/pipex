@@ -6,57 +6,75 @@
 /*   By: mquero <mquero@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 16:21:30 by mquero            #+#    #+#             */
-/*   Updated: 2024/12/10 13:17:56 by mquero           ###   ########.fr       */
+/*   Updated: 2024/12/10 21:44:36 by mquero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int main(int argc, char **argv, char **env)
+char	*find_path(char *argv, char **envp)
 {
-    int fd[2];
-    char   buffer[10000];
-    
-    (void) argc;
-    fd[0] = open(argv[1], O_RDONLY);
-    fd[1] = open(argv[4], O_WRONLY | O_APPEND | O_CREAT, 0644);
-    //pipe(fd);
+    int i;
+    char **paths;
+    char *wholepath;
 
-        read(fd[0], buffer, 10000);
-        printf("%s", buffer);
-    int  i = 0;
-        while (buffer[i])
-        {
-            write(fd[1], &buffer[i], 1);
-            i++;
-        }
-    /*int id = fork();
-    int  i = 0;
-    if (id == 0)
+    i = 0;
+    while (envp[i])
     {
-        close(fd[0]);
-        while (buffer[i])
-        {
-            write(fd[1], &buffer[i], 1);
-            i++;
-        }
-        close(fd[1]);
-    }
-    else
-    {
-        close(fd[1]);
-        read(fd[0], buffer, 10000);
-        printf("%s", buffer);
-        close(fd[0]);
-    }*/
-
-    /*while (env[i])
-    {
-        printf("%s\n",env[i]);
+        if (envp[i][0] == 'P' && envp[i][1] == 'A' && envp[i][2] == 'T')
+            paths = ft_split(envp[i] + 5, ':');
         i++;
     }
-    printf("%s\n",env[36]);*/
-    /*execve("/usr/bin/cat", argv, env);
-    printf("execve failed");*/
-    return 0;
+    i = 0;
+    while (paths[i])
+    {
+        wholepath = ft_strjoin(paths[i], argv);
+        if (access(wholepath, X_OK) == 0)
+            break;
+        else
+            free(wholepath);
+        i++;
+    }
+    freesplit(paths);
+    return (wholepath);
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	int		fd[2];
+	char	buffer[10000];
+	int		pid;
+	int i = 0;
+    char    *path1;
+    char    *path2;
+    char    **split;
+
+    path1 = find_path(argv[2], envp);
+    if (argc > 3)
+        path2 = find_path(argv[3], envp);
+    split = ft_split(argv[2], ' ');
+
+	execve(path1, argv, envp);
+	/*pipe(fd);
+	(void) argc;
+	fd[1] = open(argv[4], O_WRONLY | O_APPEND | O_CREAT, 0644);
+	dup2(fd[1], 1);
+	pid = fork();
+	if (pid == 0)
+	{
+		fd[0] = open(argv[1], O_RDONLY);
+		read(fd[0], buffer, 10000);
+		write(fd[1], buffer , 100);
+		close(fd[0]);
+		close(fd[1]);
+	}
+	close(fd[1]);
+	close(fd[0]);*/
+	/*else
+	{
+		close(fd[1]);
+		close(fd[0]);
+	}*/
+	// printf("execve failed");*/
+	return (0);
 }
