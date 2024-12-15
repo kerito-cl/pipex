@@ -6,7 +6,7 @@
 /*   By: mquero <mquero@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 16:21:30 by mquero            #+#    #+#             */
-/*   Updated: 2024/12/13 15:02:05 by mquero           ###   ########.fr       */
+/*   Updated: 2024/12/15 20:57:50 by mquero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,51 +39,65 @@ char	*find_path(char *argv, char **envp)
     return (wholepath);
 }
 
+void    child1(t_fd fd, char **argv, char **envp)
+{
+    char    *path;
+    char    **split;
+
+    path = find_path(argv[2], envp);
+    split = ft_split(argv[2], ' ');
+    dup2(fd.input, STDIN_FILENO);
+    dup2(fd.pipe[1], STDOUT_FILENO);
+    close(fd.input);
+    close(fd.output);
+    close(fd.pipe[0]);
+    close(fd.pipe[1]);
+    execve(path, split, envp);
+    free(path);
+    freesplit(split);
+}
+void    child2(t_fd fd, char **argv, char **envp)
+{
+    char    *path;
+    char    **split;
+
+    path = find_path(argv[3], envp);
+    split = ft_split(argv[3], ' ');
+    dup2(fd.pipe[0], STDIN_FILENO);
+    dup2(fd.output, STDOUT_FILENO);
+    close(fd.input);
+    close(fd.output);
+    close(fd.pipe[0]);
+    close(fd.pipe[1]);
+    execve(path, split, envp);
+    freesplit(split);
+    free(path);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
-	int		fd[2];
-	char	buffer[10000];
+    t_fd    fd;
 	int		pid1;
 	int		pid2;
-	int i = 0;
-    char    *path1;
-    char    *path2;
-    char    **split;
-    int fd_input;
-    int fd_output;
 
-	(void) argc;
-	pipe(fd);
-    path1 = find_path(argv[2], envp);
-    if (argc > 3)
-        path2 = find_path(argv[3], envp);
-    split = ft_split(argv[2], ' ');
-
-	fd_input = open(argv[1], O_RDONLY);
-	fd_output = open(argv[4], O_WRONLY | O_APPEND | O_CREAT, 0644);
-	pid1 = fork();
-	pid2 = fork();
-	if (pid1 == 0)
-	{
-	    dup2(fd[0], 0);
-        close(fd[0]);
-        close(fd[1]);
-	    execve(path1, split, envp);
-		/*read(fd[0], buffer, 10000);
-		write(fd[1], buffer , 100);
-		close(fd[0]);
-		close(fd[1]);*/
-	}
-
-    close(fd[0]);
-	if (pid2 == 0)
-	{
-	    dup2(fd[1], 1);
-        close(fd[1]);
+    if (argc != 5)
+    {
+        return 0;
     }
-	dup2(fd[1], 1);
+	pipe(fd.pipe);
+	fd.input = open(argv[1], O_RDONLY);
+	fd.output = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	pid1 = fork();
+	if (pid1 == 0)
+        child1(fd, argv, envp);
 	pid2 = fork();
-	close(fd[1]);
-	close(fd[0]);
+	if (pid2 == 0)
+        child2(fd, argv, envp);
+    close(fd.pipe[0]);
+    close(fd.pipe[1]);
+    close(fd.output);
+    close(fd.input);
+    waitpid(pid1, NULL, 0);
+    waitpid(pid2, NULL, 0);
 	return (0);
 }
