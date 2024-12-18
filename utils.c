@@ -6,7 +6,7 @@
 /*   By: mquero <mquero@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 10:40:48 by mquero            #+#    #+#             */
-/*   Updated: 2024/12/10 21:09:43 by mquero           ###   ########.fr       */
+/*   Updated: 2024/12/18 13:54:35 by mquero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,23 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	}
 	dest[i + j] = '\0';
 	return (dest);
+}
+
+char	*ft_strdup(const char *s)
+{
+	int		len;
+	char	*des;
+
+	len = ft_strlen(s);
+	des = (char *)malloc((len + 1) * sizeof(char));
+	if (des == NULL)
+		return (NULL);
+	len = 0;
+	while (s[len])
+	{
+		des[len] = s[len];
+		len++;
+	}
+	des[len] = '\0';
+	return (des);
 }
