@@ -6,7 +6,7 @@
 /*   By: mquero <mquero@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 10:40:48 by mquero            #+#    #+#             */
-/*   Updated: 2024/12/18 13:54:35 by mquero           ###   ########.fr       */
+/*   Updated: 2024/12/20 11:16:41 by mquero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	while (s2[j] != '\0')
 	{
 		if (s2[j] == ' ')
-			break;
+			break ;
 		dest[i + j] = s2[j];
 		j++;
 	}

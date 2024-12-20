@@ -6,24 +6,24 @@
 /*   By: mquero <mquero@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 16:50:40 by mquero            #+#    #+#             */
-/*   Updated: 2024/12/18 13:59:16 by mquero           ###   ########.fr       */
+/*   Updated: 2024/12/20 11:17:52 by mquero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_H
 # define PIPEX_H
 
+# include "./printf/ft_printf.h"
+# include <errno.h>
 # include <fcntl.h>
 # include <limits.h>
+# include <stdbool.h>
 # include <stdint.h>
 # include <stdio.h>
-# include <stdbool.h>
 # include <stdlib.h>
+# include <string.h>
 # include <sys/wait.h>
 # include <unistd.h>
-#include <string.h>
-#include <errno.h>
-
 
 typedef struct s_fd
 {
@@ -33,12 +33,18 @@ typedef struct s_fd
 	char	**split;
 	int		input;
 	int		output;
+	int		if_dir;
 }			t_fd;
 
 char		*ft_strjoin(char const *s1, char const *s2);
 void		freesplit(char **strs);
 char		**ft_split(char const *s, char c);
 size_t		ft_strlcpy(char *dst, const char *src, size_t size);
-char	*ft_strdup(const char *s);
+char		*ft_strdup(const char *s);
+void		child1(t_fd fd, char **argv, char **envp);
+void		child2(t_fd fd, char **argv, char **envp);
+void		close_all(t_fd *fd);
+void		throw_error_child1(char *path, char *str, t_fd *fd, char *arg);
+void		throw_error_child2(char *path, char *str, t_fd *fd, char *arg);
 
 #endif

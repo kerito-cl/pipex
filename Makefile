@@ -1,5 +1,5 @@
 NAME = pipex
-SOURCES = main.c ft_split.c utils.c
+SOURCES = main.c ft_split.c utils.c children.c error.c
 OFILES = $(SOURCES:.c=.o)
 CC = cc
 FLAGS = -Wall -Wextra -Werror
@@ -7,7 +7,7 @@ FLAGS = -Wall -Wextra -Werror
 all: $(NAME)
 
 $(NAME): $(OFILES)
-	$(CC) $(FLAGS) $(OFILES) -o $(NAME)
+	$(CC) $(FLAGS) $(OFILES) -o $(NAME) -L./printf -lftprintf
 
 %.o: %.c
 	$(CC) $(FLAGS) -c $< -I. -o $@
