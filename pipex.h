@@ -6,7 +6,7 @@
 /*   By: mquero <mquero@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 16:50:40 by mquero            #+#    #+#             */
-/*   Updated: 2024/12/20 11:17:52 by mquero           ###   ########.fr       */
+/*   Updated: 2024/12/26 14:05:51 by mquero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ typedef struct s_fd
 	char	**split;
 	int		input;
 	int		output;
-	int		if_dir;
+	int		status;
 }			t_fd;
 
 char		*ft_strjoin(char const *s1, char const *s2);
@@ -45,6 +45,7 @@ void		child1(t_fd fd, char **argv, char **envp);
 void		child2(t_fd fd, char **argv, char **envp);
 void		close_all(t_fd *fd);
 void		throw_error_child1(char *path, char *str, t_fd *fd, char *arg);
-void		throw_error_child2(char *path, char *str, t_fd *fd, char *arg);
+void		throw_error_child2(char *path, t_fd *fd, char *arg);
+void		error_ifdir(char *str);
 
 #endif

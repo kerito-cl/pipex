@@ -6,7 +6,7 @@
 /*   By: mquero <mquero@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 19:15:35 by mquero            #+#    #+#             */
-/*   Updated: 2024/12/19 11:09:40 by mquero           ###   ########.fr       */
+/*   Updated: 2024/12/26 11:10:07 by mquero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,13 @@ void	print_int(const char *str, int64_t ar, size_t *i, int *count)
 	else if (str[*i + 1] == 'd' || str[*i + 1] == 'i')
 	{
 		a = ar;
-		*count = *count + ft_putnbr_fd((int)a, 1, 1);
+		*count = *count + ft_putnbr_fd((int)a, 2, 1);
 		*i = *i + 1;
 	}
 	else if (str[*i + 1] == 'u')
 	{
 		u = ar;
-		*count = *count + ft_putnbr_fd(u, 1, 1);
+		*count = *count + ft_putnbr_fd(u, 2, 1);
 		*i = *i + 1;
 	}
 }

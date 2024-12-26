@@ -6,7 +6,7 @@
 /*   By: mquero <mquero@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 11:10:55 by mquero            #+#    #+#             */
-/*   Updated: 2024/12/20 12:55:33 by mquero           ###   ########.fr       */
+/*   Updated: 2024/12/26 14:05:42 by mquero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ char	*find_path(char *argv, char **envp, int i)
 
 	while (envp[i])
 	{
-		if (envp[i][0] == 'P' && envp[i][1] == 'A' && envp[i][2] == 'T')
+		if (envp[i][0] == 'P' && envp[i][1] == 'A' && envp[i][2] == 'T'
+		&& envp[i][3] == 'H' && envp[i][4] == '=')
 			paths = ft_split(envp[i] + 5, ':');
 		i++;
 	}
@@ -73,7 +74,7 @@ void	child1(t_fd fd, char **argv, char **envp)
 		freesplit(split);
 		perror(path);
 		free(path);
-		exit(1);
+		exit (1);
 	}
 }
 
@@ -89,10 +90,10 @@ void	child2(t_fd fd, char **argv, char **envp)
 		path = ft_strdup(split[0]);
 	else
 		path = find_path(argv[3], envp, i);
-	if (path == NULL || fd.if_dir != -1)
+	if (path == NULL)
 	{
 		freesplit(split);
-		throw_error_child2(path, argv[4], &fd, argv[3]);
+		throw_error_child2(path, &fd, argv[3]);
 	}
 	dup2(fd.pipe[0], STDIN_FILENO);
 	dup2(fd.output, STDOUT_FILENO);
@@ -102,6 +103,6 @@ void	child2(t_fd fd, char **argv, char **envp)
 		perror(path);
 		free(path);
 		freesplit(split);
-		exit(1);
+		exit(126);
 	}
 }
