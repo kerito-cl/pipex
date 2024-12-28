@@ -6,7 +6,7 @@
 /*   By: mquero <mquero@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 11:10:55 by mquero            #+#    #+#             */
-/*   Updated: 2024/12/26 14:05:42 by mquero           ###   ########.fr       */
+/*   Updated: 2024/12/28 14:40:02 by mquero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,11 @@ void	child1(t_fd fd, char **argv, char **envp)
 
 	i = 0;
 	split = ft_split(argv[2], ' ');
+	if (split[0] == NULL)
+	{
+		freesplit(split);
+		exit(1);
+	}
 	if (check_if_full_path(split[0]))
 		path = ft_strdup(split[0]);
 	else
@@ -64,18 +69,13 @@ void	child1(t_fd fd, char **argv, char **envp)
 	if (path == NULL || fd.input == -1)
 	{
 		freesplit(split);
-		throw_error_child1(path, argv[1], &fd, argv[2]);
+		throw_error_child(path, &fd, argv[2]);
 	}
 	dup2(fd.input, STDIN_FILENO);
 	dup2(fd.pipe[1], STDOUT_FILENO);
 	close_all(&fd);
 	if (execve(path, split, envp) == -1)
-	{
-		freesplit(split);
-		perror(path);
-		free(path);
-		exit (1);
-	}
+		e_free_e(path, split);
 }
 
 void	child2(t_fd fd, char **argv, char **envp)
@@ -86,23 +86,23 @@ void	child2(t_fd fd, char **argv, char **envp)
 
 	i = 0;
 	split = ft_split(argv[3], ' ');
+	if (split[0] == NULL)
+	{
+		freesplit(split);
+		exit(1);
+	}
 	if (check_if_full_path(split[0]))
 		path = ft_strdup(split[0]);
 	else
 		path = find_path(argv[3], envp, i);
-	if (path == NULL)
+	if (path == NULL || fd.output == -1)
 	{
 		freesplit(split);
-		throw_error_child2(path, &fd, argv[3]);
+		throw_error_child(path, &fd, argv[3]);
 	}
 	dup2(fd.pipe[0], STDIN_FILENO);
 	dup2(fd.output, STDOUT_FILENO);
 	close_all(&fd);
 	if (execve(path, split, envp) == -1)
-	{
-		perror(path);
-		free(path);
-		freesplit(split);
-		exit(126);
-	}
+		e_free_e(path, split);
 }

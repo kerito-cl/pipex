@@ -6,7 +6,7 @@
 /*   By: mquero <mquero@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 11:13:12 by mquero            #+#    #+#             */
-/*   Updated: 2024/12/26 14:06:54 by mquero           ###   ########.fr       */
+/*   Updated: 2024/12/28 14:42:56 by mquero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,21 +22,7 @@ void	close_all(t_fd *fd)
 		close(fd->input);
 }
 
-void	throw_error_child1(char *path, char *str, t_fd *fd, char *arg)
-{
-	if (fd->input == -1)
-		perror(str);
-	else if (path == NULL)
-		ft_printf("pipex: command not found: %s\n", arg);
-	if (path != NULL)
-	{
-		free(path);
-	}
-	close_all(fd);
-	exit(1);
-}
-
-void	throw_error_child2(char *path, t_fd *fd, char *arg)
+void	throw_error_child(char *path, t_fd *fd, char *arg)
 {
 	if (path == NULL)
 		ft_printf("pipex: command not found: %s\n", arg);
@@ -45,11 +31,22 @@ void	throw_error_child2(char *path, t_fd *fd, char *arg)
 		free(path);
 	}
 	close_all(fd);
-	exit(127);
+	if (fd->input == -1 || fd->output == -1)
+		exit(1);
+	else
+		exit(127);
 }
 
 void	error_ifdir(char *str)
 {
-	ft_printf("pipex: Is a directory: %s\n", str);
-	exit(1);
+	ft_printf("pipex: ");
+	perror(str);
+}
+
+void	e_free_e(char *str, char **split)
+{
+	perror(str);
+	free(str);
+	freesplit(split);
+	exit(126);
 }
